@@ -9,5 +9,13 @@ public class Calculator {
 	public int multiply(int a, int b) {
 		return a * b;
 	}
+	
+	public void longCalculation() {
+		try {
+			Thread.sleep(500); // 2000
+		} catch (final InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 
 }
