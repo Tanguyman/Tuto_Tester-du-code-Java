@@ -1,10 +1,14 @@
 package com.openclassrooms.testing;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.text.MessageFormat;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -58,7 +62,8 @@ public class CalculatorTest {
 		int somme = calculatorUnderTest.add(a, b);
 
 		// Assert
-		assertEquals(5, somme);
+		// assertEquals(5, somme);
+		assertThat(somme).isEqualTo(5);
 	}
 
 	@Test
@@ -71,7 +76,8 @@ public class CalculatorTest {
 		int produit = calculatorUnderTest.multiply(a, b);
 
 		// Assert
-		assertEquals(462, produit);
+		// assertEquals(462, produit);
+		assertThat(produit).isEqualTo(462);
 	}
 
 	@ParameterizedTest(name = "{0} x 0 doit être égal à 0")
@@ -83,7 +89,8 @@ public class CalculatorTest {
 		int actualResult = calculatorUnderTest.multiply(arg, 0);
 
 		// Assert -- ça vaut toujours zéro !
-		assertEquals(0, actualResult);
+		// assertEquals(0, actualResult);
+		assertThat(actualResult).isEqualTo(0);
 	}
 
 	@ParameterizedTest(name = "{0} + {1} doit être égal à {2}")
@@ -96,6 +103,8 @@ public class CalculatorTest {
 
 		// Assert
 		assertEquals(expectResult, actualResult);
+		assertThat(actualResult).isEqualTo(expectResult);
+
 	}
 
 	@Timeout(1)
@@ -110,4 +119,37 @@ public class CalculatorTest {
 		// ...
 	}
 
+	@Test
+	public void listDigits_shouldReturnsTheListOfDigits_ofPositiveInteger() {
+		// GIVEN
+		int number = 95897;
+
+		// WHEN
+		Set<Integer> actualDigits = calculatorUnderTest.digitsSet(number);
+
+		// THEN avec JUnit
+		// passé par des classes intermédiaire pour que cela se fasse proprement
+		// Set<Integer> expecteDigits = Stream.of(9, 5, 8,
+		// 7).collect(Collectors.toSet());
+		// Puis on vérifie
+		// assertEquals(expecteDigits, actualDigits);
+
+		// THEN avec AssertJ
+		assertThat(actualDigits).containsExactlyInAnyOrder(9, 5, 8, 7);
+	}
+
+	@Test
+	public void listDigits_shouldReturnsTheListOfZero_ofZero() {
+		final int number = 0;
+		Set<Integer> actualDigits = calculatorUnderTest.digitsSet(number);
+		assertThat(actualDigits).containsExactly(0);
+
+	}
+
+	@Test
+	public void listDigits_shouldReturnsTheListOfDigits_ofNegativeInteger() {
+		final int number = -124432;
+		Set<Integer> actualDigits = calculatorUnderTest.digitsSet(number);
+		assertThat(actualDigits).containsExactlyInAnyOrder(1, 2, 4, 3);
+	}
 }
