@@ -14,6 +14,9 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -52,59 +55,75 @@ public class CalculatorTest {
 		System.out.println(MessageFormat.format("Durée des tests : {0} ms", duration));
 	}
 
-	@Test
-	public void testAddTwoPositiveNumbers() {
-		// Arrange
-		int a = 2;
-		int b = 3;
+	@Nested
+	@DisplayName("Réussir à faire des additions")
+	class AdditionTests {
 
-		// Act
-		int somme = calculatorUnderTest.add(a, b);
+		@Test
+		@Tag("Addition") // ce test fait partie des tests des 4 opérations de base
+		public void testAddTwoPositiveNumbers() {
+			// Arrange
+			int a = 2;
+			int b = 3;
 
-		// Assert
-		assertThat(somme).isEqualTo(5);
-		assertEquals(5, somme);
+			// Act
+			int somme = calculatorUnderTest.add(a, b);
+
+			// Assert
+			assertThat(somme).isEqualTo(5);
+			assertEquals(5, somme);
+		}
+
+		@ParameterizedTest(name = "{0} + {1} doit être égal à {2}")
+		@CsvSource({ "1,1,2", "2,3,5", "42,57,99" })
+		@Tag("Addition2")
+		public void add_shouldReturnTheSum_ofMultipleIntegers(int arg1, int arg2, int expectResult) {
+			// Arrange -- Tout est prêt !
+
+			// Act
+			int actualResult = calculatorUnderTest.add(arg1, arg2);
+
+			// Assert
+			assertEquals(expectResult, actualResult);
+		}
+	}
+
+	@Nested
+	@DisplayName("Réussir à faire des multiplications")
+	class MultiplicationTest {
+
+		@Test
+		@DisplayName("Soit 2 chiffres 42 et 11, lorsq’on les multiplient, alors on obtient 462")
+		public void multiply_shouldReturnTheProduct_ofTwoIntegers() {
+			// Arrange
+			int a = 42;
+			int b = 11;
+
+			// Act
+			int produit = calculatorUnderTest.multiply(a, b);
+
+			// Assert
+			assertEquals(462, produit);
+		}
+
+//		@Test
+		@DisplayName("Soit une série de chiffres, lorsq’on les multiplient par 0, alors on obtient 0")
+		@ParameterizedTest(name = "{0} x 0 doit être égal à 0")
+		@ValueSource(ints = { 1, 2, 42, 1011, 5089 })
+		public void multiply_shouldReturnZero_ofZeroWithMultipleIntegers(int arg) {
+			// Arrange -- Tout est prêt !
+
+			// Act -- Multiplier par zéro
+			int actualResult = calculatorUnderTest.multiply(arg, 0);
+
+			// Assert -- ça vaut toujours zéro !
+			assertEquals(0, actualResult);
+		}
 	}
 
 	@Test
-	public void multiply_shouldReturnTheProduct_ofTwoIntegers() {
-		// Arrange
-		int a = 42;
-		int b = 11;
-
-		// Act
-		int produit = calculatorUnderTest.multiply(a, b);
-
-		// Assert
-		assertEquals(462, produit);
-	}
-
-	@ParameterizedTest(name = "{0} x 0 doit être égal à 0")
-	@ValueSource(ints = { 1, 2, 42, 1011, 5089 })
-	public void multiply_shouldReturnZero_ofZeroWithMultipleIntegers(int arg) {
-		// Arrange -- Tout est prêt !
-
-		// Act -- Multiplier par zéro
-		int actualResult = calculatorUnderTest.multiply(arg, 0);
-
-		// Assert -- ça vaut toujours zéro !
-		assertEquals(0, actualResult);
-	}
-
-	@ParameterizedTest(name = "{0} + {1} doit être égal à {2}")
-	@CsvSource({ "1,1,2", "2,3,5", "42,57,99" })
-	public void add_shouldReturnTheSum_ofMultipleIntegers(int arg1, int arg2, int expectResult) {
-		// Arrange -- Tout est prêt !
-
-		// Act
-		int actualResult = calculatorUnderTest.add(arg1, arg2);
-
-		// Assert
-		assertEquals(expectResult, actualResult);
-	}
-
+	@DisplayName("Le calcul doit se faire en moins d’une seconde")
 	@Timeout(1)
-	@Test
 	public void longCalcul_shouldComputeInLessThan1Second() {
 		// Arrange
 
@@ -115,32 +134,40 @@ public class CalculatorTest {
 		// ...
 	}
 
-	@Test
-	public void listDigits_shouldReturnsTheListOfDigits_ofPositiveInteger() {
-		// GIVEN
-		int number = 95897;
+	@Nested
+	@Tag("SetTests")
+	@DisplayName("Réussir à manipuler des tableaux d’entiers")
+	public class SetTests {
+		@Test
+		@DisplayName("Le tableau doit contenir une liste d’entiers positifs")
+		public void listDigits_shouldReturnsTheListOfDigits_ofPositiveInteger() {
+			// GIVEN
+			int number = 95897;
 
-		// WHEN
-		Set<Integer> actualDigits = calculatorUnderTest.digitsSet(number);
+			// WHEN
+			Set<Integer> actualDigits = calculatorUnderTest.digitsSet(number);
 
-		// THEN
-		assertThat(actualDigits).containsExactlyInAnyOrder(9, 5, 8, 7);
-		Set<Integer> expectedDigits = Stream.of(5, 7, 8, 9).collect(Collectors.toSet());
-		assertEquals(expectedDigits, actualDigits);
-	}
+			// THEN
+			assertThat(actualDigits).containsExactlyInAnyOrder(9, 5, 8, 7);
+			Set<Integer> expectedDigits = Stream.of(5, 7, 8, 9).collect(Collectors.toSet());
+			assertEquals(expectedDigits, actualDigits);
+		}
 
-	@Test
-	public void listDigits_shouldReturnsTheListOfDigits_ofNegativeInteger() {
-		int number = -124432;
-		Set<Integer> actualDigits = calculatorUnderTest.digitsSet(number);
-		assertThat(actualDigits).containsExactlyInAnyOrder(1, 2, 3, 4);
-	}
+		@Test
+		@DisplayName("Le tableau doit contenir une liste d’entiers négatifs")
+		public void listDigits_shouldReturnsTheListOfDigits_ofNegativeInteger() {
+			int number = -124432;
+			Set<Integer> actualDigits = calculatorUnderTest.digitsSet(number);
+			assertThat(actualDigits).containsExactlyInAnyOrder(1, 2, 3, 4);
+		}
 
-	@Test
-	public void listDigits_shouldReturnsTheListOfZero_ofZero() {
-		int number = 0;
-		Set<Integer> actualDigits = calculatorUnderTest.digitsSet(number);
-		assertThat(actualDigits).containsExactly(0);
+		@Test
+		@DisplayName("Le tableau doit contenir 0")
+		public void listDigits_shouldReturnsTheListOfZero_ofZero() {
+			int number = 0;
+			Set<Integer> actualDigits = calculatorUnderTest.digitsSet(number);
+			assertThat(actualDigits).containsExactly(0);
+		}
 	}
 
 }
