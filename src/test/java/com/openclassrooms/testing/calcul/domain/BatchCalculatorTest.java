@@ -28,6 +28,9 @@ public class BatchCalculatorTest {
 						.openStream()))) {
 			operations = br.lines();
 
+			// Ce n’est pas Fast car on va sur le web chercher les infos
+			// Il faut virer le try
+			// operations = Stream.of("2 + 2", "5 x 4", "6 + 8", "10 x 3");
 			BatchCalculator batchCalculator = new BatchCalculator(new Calculator());
 
 			// WHEN
