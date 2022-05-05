@@ -206,7 +206,7 @@ public class CalculatorTest {
 		int b = r.nextInt() % 3;
 		
 		// WHEN on multiplie a par b puis on divise par b
-		// 
+		// Si b = 0 le test ne passera pas
 		int c = calculatorUnderTest.divide(calculatorUnderTest.multiply(a, b + 1), b + 1);
 		
 		// THEN on ré-obtient a
