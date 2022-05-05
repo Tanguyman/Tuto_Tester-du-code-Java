@@ -22,12 +22,18 @@ public class Calculator {
 	}
 
 	public Set<Integer> digitsSet(int number) {
-		Set<Integer> integers = new HashSet<Integer>();
+		Set<Integer> integers = new HashSet<>();
 		String numberString = String.valueOf(number);
+		if(numberString.length() == 0) {
+			integers.add(0);
+		} else {
+			
 
-		for (int i = 0; i < numberString.length(); i++) {
-			if (numberString.charAt(i) != '-') {
-				integers.add(Integer.parseInt(numberString, i, i + 1, 10));
+			
+			for (int i = 0; i < numberString.length(); i++) {
+				if (numberString.charAt(i) != '-') {
+					integers.add(Integer.parseInt(numberString, i, i + 1, 10));
+				}
 			}
 		}
 		return integers;
