@@ -23,7 +23,7 @@ public class SolutionFormatterTest {
 		String result = solutionFormatter.format(number);
 		
 		// THEN
-		assertThat(result).isEqualTo("1 234 567 890");
+		assertThat(result).isEqualTo("1 234 567 890"); // Comment il fait avec le format des espaces
 	}
 	
 }
